@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Results</title>
+</head>
+<body>
+<!--<form action="/result">-->
+<ul>
+    {% for key in love %}
+    <li>Love {{ key}}: {{ love[key]}}</li>
+    {% endfor %}
+ </ul>
+<hr>
+<ul>
+    {% for answ in answers %}
+    <li>{{ answ}}: visited {{ answers[answ]['count']}} time(s), loves {{ answers[answ]['loves']}}</li>
+    {% endfor %}
+</ul>
+</body>
+</html>
