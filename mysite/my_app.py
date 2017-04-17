@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import url_for, render_template, request, redirect
+from flask import render_template, request
 from pymystem3 import Mystem
 
 m = Mystem()
@@ -16,7 +16,7 @@ def verbs_info(text):
     for i in ana:
         if i['text'].strip() and 'analysis' in i and i['analysis']:
             word_cnt += 1
-            if 'V' in i['analysis'][0]['gr']:
+            if 'V,' in i['analysis'][0]['gr']:
                 verb_cnt += 1
                 if i['analysis'][0]['lex'] not in lem_freq_dict:
                     lem_freq_dict[i['analysis'][0]['lex']] = 1
