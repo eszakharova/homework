@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Все о глаголах</title>
+    <style>
+        .pos {vertical-align: sub; color: blue; font-size: 70%;}
+        .result {font-size: 24px;}
+    </style>
+</head>
+<body>
+    <form method='post'>
+        <h1>Ваш текст:</h1>
+        <textarea rows="4" cols="50" name="text">{{ input }}</textarea>
+        <br>
+        <input type="submit" value="Разобрать">
+    </form>
+
+    {% if toprint1 %}
+        <h1>Информация о глаголах:</h1>
+        <ul>
+    {% for p in toprint1 %}
+    <li>{{p}}</li>
+    {% endfor %}
+    </ul>
+    <h2>Частотный список лемм:</h2>
+    <ul>
+    {% for r in toprint2 %}
+     <li>{{r}}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+
+</body>
+</html>

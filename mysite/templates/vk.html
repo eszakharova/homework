@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ВК ВК ВК АПИ АПИ АПИ</title>
+</head>
+<body>
+<form method='post'>
+		<h1>Название или id первой группы </h1>
+		<input type="text" placeholder="Например, schooloflinguistics" name="group_id1">
+		<br>
+        <h1>Название или id второй группы</h1>
+        <input type="text" placeholder="Например, schooloflinguistics" name="group_id2">
+		<br>
+		<input type="submit" value="Число подписчиков">
+	</form>
+
+	{% if result %}
+        {% if result[3] %}
+        <h2>Закрытая группа...</h2>
+        {% else %}
+		<h2>Подписчики группы {{ group_id1 }}:</h2>
+		<p>{{result[0]}}</p>
+        <h2>Подписчики группы {{ group_id2 }}:</h2>
+        <p>{{result[1]}}</p>
+        <h2>Подписчики обеих групп:</h2>
+        <p>{{result[2]}}</p>
+        {% endif %}
+	{% endif %}
+</body>
+</html>
