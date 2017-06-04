@@ -3,9 +3,51 @@ from flask import render_template, request
 from pymystem3 import Mystem
 import json
 import requests
+import nltk
+from nltk.stem.snowball import SnowballStemmer
+from nltk.collocations import *
 
 m = Mystem()
 app = Flask(__name__)
+
+
+def load_corp():
+    my_corpus = nltk.corpus.PlaintextCorpusReader('./texts', '.*\.txt')
+    return my_corpus
+
+
+def corp_exact_search(exact, corp):
+    found = []
+    for sent in corp.sents():
+        if exact in sent:
+            found.append(sent)
+    return found
+
+
+def corp_stem_search(stem, corp):
+    stemmer = SnowballStemmer("russian")
+    stem = stemmer.stem(stem)
+    found = []
+    for sent in corp.sents():
+        ap = False
+        for word in sent:
+            if stem in word and stemmer.stem(word) == stem:
+                ap = True
+        if ap:
+            found.append(sent)
+    return found
+
+
+def corp_coll_search(word, corp):
+    found = []
+    bigram_measures = nltk.collocations.BigramAssocMeasures()
+    finder = BigramCollocationFinder.from_words(corp.words())
+    scored = finder.score_ngrams(bigram_measures.raw_freq)
+    sorted_bigrams = sorted(bigram for bigram, score in scored)
+    for pair in sorted_bigrams:
+        if word in pair:
+            found.append(pair)
+    return found
 
 
 def verbs_info(text):
@@ -77,6 +119,7 @@ def get_members_info(id1, id2):
         intersection = len(member_ids1.intersection(member_ids2))
     return [id1_members_cnt, id2_members_cnt, intersection, closed]
 
+mycorp = load_corp()
 
 @app.route('/', methods=['get', 'post'])
 def index():
@@ -98,8 +141,36 @@ def vk():
         group_id1 = request.form['group_id1']
         group_id2 = request.form['group_id2']
         result = get_members_info(group_id1, group_id2)
-        return render_template('vk.html', result=result, group_id1 = group_id1, group_id2 = group_id2)
+        return render_template('vk.html', result=result, group_id1=group_id1, group_id2=group_id2)
     return render_template('vk.html')
+
+
+@app.route('/nltk', methods=['get', 'post'])
+def search_corp():
+    if request.form:
+        exact = request.form['exact']
+        stem = request.form['stem']
+        collword = request.form['coll']
+        num = request.form['colls']
+        if exact:
+            pre_result = corp_exact_search(exact, mycorp)
+            result = [' '.join(sent) for sent in pre_result]
+            return render_template('nltk.html', result=result)
+        elif stem:
+            pre_result = corp_stem_search(stem, mycorp)
+            result = [' '.join(sent) for sent in pre_result]
+            return render_template('nltk.html', result=result)
+        elif collword:
+            pre_result = corp_coll_search(collword, mycorp)
+            if not num:
+                result = pre_result
+            else:
+                if len(pre_result) > int(num):
+                    result = pre_result[:int(num)+1]
+                else:
+                    result = pre_result
+            return render_template('nltk.html', result=result)
+    return render_template('nltk.html')
 
 
 if __name__ == '__main__':
