@@ -11,8 +11,34 @@
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <style> body {padding-top: 70px;}</style>
 </head>
+<!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <!--<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">-->
+            <!--<span class="sr-only">Toggle navigation</span>-->
+            <!--<span class="icon-bar"></span>-->
+            <!--<span class="icon-bar"></span>-->
+            <!--<span class="icon-bar"></span>-->
+          <!--</button>-->
+          <a class="navbar-brand" href="/">Навигация по сайту</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="/">На главную</a></li>
+            <li><a href="https://github.com/eszakharova/homework/tree/master/mysite">Исходный код</a></li>
+            <li><a href="/verbs">Глаголы</a></li>
+              <li><a href="/vk">BK</a></li>
+              <li><a href="/nltk">Корпус пьес</a></li>
+
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
 <body>
+<div class="container theme-showcase" role="main">
  <h1>Поиск по копусу пьес</h1>
  <form method='post'>
         <h2>Поиск по точной форме</h2>
@@ -40,6 +66,6 @@
     {% endfor %}
     </ul>
     {% endif %}
-
+</div>
 </body>
 </html>

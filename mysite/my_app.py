@@ -5,6 +5,7 @@ import json
 import requests
 import nltk
 from nltk.stem.snowball import SnowballStemmer
+from collections import OrderedDict
 from nltk.collocations import *
 
 m = Mystem()
@@ -57,6 +58,7 @@ def verbs_info(text):
     imperf = 0
     tran = 0
     lem_freq_dict = {}
+
     for i in ana:
         if i['text'].strip() and 'analysis' in i and i['analysis']:
             word_cnt += 1
@@ -80,9 +82,10 @@ def verbs_info(text):
     res2 = []
     for i in range(len(res_names)):
         res1.append(res_names[i] + str(res_values[i]))
-    for j in sorted(lem_freq_dict.keys(), key=lambda x: lem_freq_dict[x], reverse=True):
+    lem_freq_ordered = OrderedDict(sorted(lem_freq_dict.items(), key=lambda x: x[0], reverse=True))
+    for j in lem_freq_ordered:
         res2.append(j + ': ' + str(lem_freq_dict[j]))
-    return res1, res2
+    return res1, res2, lem_freq_ordered
 
 
 def vk_api(method, **kwargs):
@@ -117,9 +120,10 @@ def get_members_info(id1, id2):
         member_ids1 = get_all_members(id1, id1_members_cnt)
         member_ids2 = get_all_members(id2, id2_members_cnt)
         intersection = len(member_ids1.intersection(member_ids2))
-    return [id1_members_cnt, id2_members_cnt, intersection, closed]
+    return [id1_members_cnt, id2_members_cnt, intersection, closed], {id1: id1_members_cnt, id2: id2_members_cnt}
 
 mycorp = load_corp()
+
 
 @app.route('/', methods=['get', 'post'])
 def index():
@@ -130,9 +134,9 @@ def index():
 def verbs():
     if request.form:
         text = request.form['text']
-        res1, res2 = verbs_info(text)
-        return render_template('verbs.html', input=text, toprint1=res1, toprint2=res2)
-    return render_template('verbs.html')
+        res1, res2, dat = verbs_info(text)
+        return render_template('verbs.html', input=text, toprint1=res1, toprint2=res2, data=dat)
+    return render_template('verbs.html', data={})
 
 
 @app.route('/vk', methods=['get', 'post'])
@@ -140,9 +144,9 @@ def vk():
     if request.form:
         group_id1 = request.form['group_id1']
         group_id2 = request.form['group_id2']
-        result = get_members_info(group_id1, group_id2)
-        return render_template('vk.html', result=result, group_id1=group_id1, group_id2=group_id2)
-    return render_template('vk.html')
+        result, d = get_members_info(group_id1, group_id2)
+        return render_template('vk.html', result=result, group_id1=group_id1, group_id2=group_id2, data=d)
+    return render_template('vk.html', data={})
 
 
 @app.route('/nltk', methods=['get', 'post'])

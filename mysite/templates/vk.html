@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ВК ВК ВК АПИ АПИ АПИ</title>
+    <title>ВК группы</title>
         <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -12,8 +12,59 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart'], 'language': 'ru'});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Группа');
+        data.addColumn('number', 'Количество подписчиков');
+        data.addRows([
+          {% for gr, num in data.items() %}
+              ['{{ gr }}', {{ num }}],
+          {% endfor %}
+        ]);
+
+        var options = {'title':'Количество подписчиков в группах',
+                       'width':600,
+                       'height':300,
+                        'pieHole': 0.4,
+                        'legend': { position: "none" }};
+
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+
+    </script>
+    <style> body {padding-top: 70px;}</style>
 </head>
+<!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <!--<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">-->
+            <!--<span class="sr-only">Toggle navigation</span>-->
+            <!--<span class="icon-bar"></span>-->
+            <!--<span class="icon-bar"></span>-->
+            <!--<span class="icon-bar"></span>-->
+          <!--</button>-->
+          <a class="navbar-brand" href="/">Навигация по сайту</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="/">На главную</a></li>
+            <li><a href="https://github.com/eszakharova/homework/tree/master/mysite">Исходный код</a></li>
+            <li><a href="/verbs">Глаголы</a></li>
+              <li><a href="/vk">BK</a></li>
+              <li><a href="/nltk">Корпус пьес</a></li>
+
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
 <body>
+<div class="container theme-showcase" role="main">
 <h1>Количество подписчиков</h1>
 <form method='post'>
 		<h2>Название или id первой группы </h2>
@@ -26,6 +77,7 @@
 	</form>
 
 	{% if result %}
+        <div id="chart_div"></div>
         {% if result[3] %}
         <h2>Закрытая группа...</h2>
         {% else %}
@@ -37,5 +89,6 @@
         <p>{{result[2]}}</p>
         {% endif %}
 	{% endif %}
+</div>
 </body>
 </html>
